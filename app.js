@@ -13,7 +13,7 @@ var routes = require('./routes/index');
 app = express();
 
 //MongoDB
-mongoose.connect('mongodb://localhost/ProjectUTN');
+mongoose.connect('mongodb://admin:123456abC@ds059155.mlab.com:59155/contactsdbmongo');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
