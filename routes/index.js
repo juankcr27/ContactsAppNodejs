@@ -40,7 +40,7 @@ router.post('/authenticate', function(req, res) {
         // return the information including token as JSON
         res.json({
           success: true,
-          message: 'Enjoy your token!',
+          userid: user._id,
           token: token
         });
       }   
@@ -84,7 +84,9 @@ router.use(function(req, res, next) {
 
 // basic route
 router.get('/', function(req, res) { 
-    res.send('Hello! Project API');
+    res.render('index', {
+      title: 'Contacts Application'  
+    });
 });
 
 // contacts routes

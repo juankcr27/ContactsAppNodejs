@@ -1,0 +1,102 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  h1 Base Endpoint 
+  h3 GET /api/
+  p Returns all the information about the endpoints involved on the #{title}
+
+  h1 Endpoint for Authentication
+  h3 POST /api/authenticate
+  p The information for the authentication must be added to the body, with the following structure:
+  ul
+   li username: string. User name
+   li password: string. User password
+  p Returns the information generated after the authentication process with the following structure.
+  ul
+   li success: boolean. Status of the authentication process.
+   li token: string. The generated token.
+   li userid: string. The user id loggued into the application.
+
+  h1 Endpoints for Contacts
+  h3 POST /api/contacts
+  p Creates a contact. Returns the information of recently created resource as body. The body for the post must be a valid JSON with the following structure.
+  ul
+   li firstname: string-required. The first name of the contact
+   li lastname: string-required. The contact's last name.
+   li email: string-required-unique. The contacts's email. Must be unique
+   li phonenumber: string. The contact's phone number.  
+   li age: number. The contact's age.
+   li address: string. The contact's address.
+   li latitud: string-required. The contact's ubication latitud.
+   li longitud: string-required. The contact's ubication longitud.
+
+  h3 GET /api/contacts
+  p Returns a list of ALL the contacs that exists into the system. The structure of the information is a list of JSON objects, each object with the following information.
+  ul
+   li _id: string. The contact identificator. 
+   li firstname: string. The first name of the contact
+   li lastname: string. The contact's last name.
+   li email: string. The contacts's email. Must be unique
+   li phonenumber: string. The contact's phone number.  
+   li age: number. The contact's age.
+   li address: string. The contact's address.
+   li latitud: string. The contact's ubication latitud.
+   li longitud: string. The contact's ubication longitud.
+   li userid: string. The user identificator which the contact is related.
+
+  h3 GET /api/contacts/:id
+  p Returns the information of a specific contact with the following information. The contact id must be specified in the url.
+  ul
+   li _id: string. The contact identificator. 
+   li firstname: string. The first name of the contact
+   li lastname: string. The contact's last name.
+   li email: string. The contacts's email. Must be unique
+   li phonenumber: string. The contact's phone number.  
+   li age: number. The contact's age.
+   li address: string. The contact's address.
+   li latitud: string. The contact's ubication latitud.
+   li longitud: string. The contact's ubication longitud.
+   li userid: string. The user identificator which the contact is related
+
+  h3 PUT /api/contacts/:id
+  p Updates a contact information. Works also as a patch request. The body must have at least a valid property of the contact object. If there's no valid properties, the method does nothing. Returns the information of the specific contact beign updated. The contact id must be specified in the url.
+  ul
+   li _id: string. The contact identificator. 
+   li firstname: string. The first name of the contact
+   li lastname: string. The contact's last name.
+   li email: string. The contacts's email. Must be unique
+   li phonenumber: string. The contact's phone number.  
+   li age: number. The contact's age.
+   li address: string. The contact's address.
+   li latitud: string. The contact's ubication latitud.
+   li longitud: string. The contact's ubication longitud.
+   li userid: string. The user identificator which the contact is related 
+
+  h3 DELETE /api/contacts/:id
+  p Deletes a contact. The contact id must be specified in the url.
+
+  h3 FILTERS for GET  /api/contacts
+  ul
+   li /api/contacts/?select='property'+'property'+... Returns the entity properties specified as query parameters
+   li /api/contacts/?limit=5   Will return the first 5 contacts
+   li /api/contacts/?skip=5    Will skip the first 5 contacts and return the rest
+   li /api/contacts/?limit=5&skip=5    Will skip the first 5 contacts and then return the second 5 contacts
+   li /api/contacts/?sort='property'  Returns a list sorted on the name property specified, with an ascending order.
+   li /api/contacts/?sort=-'property' Returns a list sorted on the name property specified, with an descending order.
+   li /api/contacts?'property'=<value> or /api/contacts?'property'__equals=<value>    Returns contacts filtered by the property value specified in the url.
+   li /api/contacts?'property'__ne=<value>     Returns all contacts who are not the value specified in the property value.
+   li /api/contacts?'property'__gt=<value>  Returns all contacts with property greater than the value specified in the url.
+   li /api/contacts?'property'__gte=<value>   Returns all contacts with property equals or greater than the value specified in the url.
+   li /api/contacts?'property'__lt=<value>  Returns all contacts with property smaller than the value specified in the url.
+   li /api/contacts?'property'__lte=<value>   Returns all contacts with property equals or smaller than the value specified in the url.
+   li /api/contacts?'property'__in=<value>,<value>,...     Returns all the contacts where property value is equals to the values specified in the url.
+   li /api/contacts?'property'__nin=<value>,<value>...     Returns all the contacts where property value is not equals to the values specified in the url.
+   li /api/contacts?'property'__regex=/^<value>/i      Returns all the contacts with the property starting with the value specified in the url. 
+
+   p Note: when using properties, it does not need to use the '' characters.
+
+
+
