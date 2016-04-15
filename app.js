@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: cacheTime }));
 
-app.use('/api', routes);
+app.use('/api/v1', routes);
 
 app.set('jwtTokenSecret', 'ApplicationUTNProjectWebServicesAppMobiles');
 
