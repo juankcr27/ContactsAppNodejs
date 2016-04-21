@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
+var sha1 = require('sha1');
 
 //Modelos
 var User = require('../models/user');
@@ -9,10 +10,18 @@ var Contact = require('../models/contact');
 //Rutas
 
 // users routes
-User.methods(['post','get', 'delete']);
+User.methods(['post']);
+User.before('post', encode_user_pass);
+function encode_user_pass(req, res, next) {
+  if(req.body.password){
+    var passEncoded = sha1(req.body.password);
+    req.body.password = passEncoded;
+  }
+  next();
+}
 User.register(router, '/setup');
 
-// route to authenticate a user (POST http://localhost:3000/api/authenticate)
+// route to authenticate a users
 router.post('/authenticate', function(req, res) {
 
   // find the user
@@ -27,7 +36,7 @@ router.post('/authenticate', function(req, res) {
     } else if (user) {
 
       // check if password matches
-      if (user.password != req.body.password) {
+      if (user.password != sha1(req.body.password)) {
         res.json({ success: false, message: 'Authentication failed. Wrong password.' });
       } else {
 
@@ -48,6 +57,13 @@ router.post('/authenticate', function(req, res) {
     }
 
   });
+});
+
+// basic route
+router.get('/', function(req, res) { 
+    res.render('index', {
+      title: 'Contacts Application'  
+    });
 });
 
 // route middleware to verify a token
@@ -80,13 +96,6 @@ router.use(function(req, res, next) {
     });
     
   }
-});
-
-// basic route
-router.get('/', function(req, res) { 
-    res.render('index', {
-      title: 'Contacts Application'  
-    });
 });
 
 // contacts routes

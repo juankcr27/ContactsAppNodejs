@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
-var cacheTime = 86400000*7;
+var cacheTime = 3600; // expires in 1 hour
 
 var routes = require('./routes/index');
 
