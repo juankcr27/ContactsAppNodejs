@@ -10,7 +10,7 @@ var contactSchema = new mongoose.Schema({
 	phonenumber: { type: String, required: true },
 	age: Number,
 	address: String,
-	email: { type: String, required: true, unique: true },
+	email: { type: String, required: true },
 	latitud: { type : String, required : true },
 	longitud: { type : String, required : true }	
 });

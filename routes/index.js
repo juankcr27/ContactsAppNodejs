@@ -100,10 +100,91 @@ router.use(function(req, res, next) {
 
 // contacts routes
 Contact.methods(['get', 'put', 'post', 'delete']);
-Contact.before('post', set_user_reference);
-function set_user_reference(req, res, next) {
-  req.body.userid = req.decoded._doc._id;
-  next();
+Contact.before('post', set_and_prepare_contact_info);
+function set_and_prepare_contact_info(req, res, next) {
+
+  if(req.body.email){
+
+    //find the contact
+    Contact.findOne({
+      email: req.body.email,
+      userid: req.decoded._doc._id
+    }, function(err, contact) {
+
+      if (err) throw err;
+
+      if (!contact) {
+        req.body.userid = req.decoded._doc._id;
+        next();    
+      } else if (contact) {
+        if(contact.userid == req.decoded._doc._id){
+          return res.status(500).send({ 
+              name: "MongoError", 
+              message: 'exception: E11000 duplicate key error index: contactsdbmongo.contacts.$email_1 dup key: { : \"' + req.body.email + '\" }', 
+              errmsg: 'exception: E11000 duplicate key error index: contactsdbmongo.contacts.$email_1 dup key: { : \"' + req.body.email + '\" }',
+              code: 11000,
+              ok: 0
+          });   
+        }else{
+          req.body.userid = req.decoded._doc._id;
+          next();        
+        }             
+      }
+
+    });    
+
+  }else{
+    req.body.userid = req.decoded._doc._id;
+    next();
+  }  
+}
+
+Contact.before('put', validate_unique_contac);
+function validate_unique_contac(req, res, next) {
+
+  if(req.body.email){
+
+    //find the contact to be updated
+    Contact.findOne({
+      _id: req.params.id,
+      userid: req.decoded._doc._id
+    }, function(err, contact) {
+
+      if (err) throw err;
+
+      if (!contact) {
+        next();    
+      } else if (contact) {
+        if(contact.email == req.body.email){
+          next();
+        }else{
+          //find contact with email
+          Contact.findOne({
+            email: req.body.email,
+            userid: req.decoded._doc._id
+          }, function(err, contactWithEmail) {
+
+            if (err) throw err;
+
+            if (!contactWithEmail) {
+              next();    
+            } else if (contactWithEmail) {              
+                return res.status(500).send({ 
+                  name: "MongoError", 
+                  message: 'exception: E11000 duplicate key error index: contactsdbmongo.contacts.$email_1 dup key: { : \"' + req.body.email + '\" }', 
+                  errmsg: 'exception: E11000 duplicate key error index: contactsdbmongo.contacts.$email_1 dup key: { : \"' + req.body.email + '\" }',
+                  code: 11000,
+                  ok: 0
+                });                           
+            }
+          });
+        }                      
+      }
+    }); 
+  }else{
+    next();
+  }
+  
 }
 
 Contact.register(router, '/contacts');
